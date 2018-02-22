@@ -9,7 +9,7 @@ Ensure you have installed the requirements:
 `pip3 install -r requirements.txt` 
 
 Let's get started:
-`ptyhon3 backend_manage.py run`
+`ptyhon3 frontend_manage.py run`
 
 You are now running your frontend, exposed on http://your_ip:1081
 
