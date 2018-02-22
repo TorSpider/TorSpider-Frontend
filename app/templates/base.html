@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+{% block head %}
+    <title>{% block title %}{% endblock %}</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    {% block assets %}
+        {% include "assets.html" %}
+        
+    {% endblock %}
+    {% block scripts %}
+        {% include "scripts.html" %}
+    {% endblock %}
+    <script type="text/javascript">
+        function main () {
+            // Step 1. Create a graph:
+            var graph = Viva.Graph.graph();
+            
+            renderer.run();
+        }
+    </script>
+{% endblock %}
+</head>
+<body onload='main()'>
+{{  new_body }}
+</body>
+</html>
