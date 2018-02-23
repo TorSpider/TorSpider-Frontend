@@ -1,0 +1,11 @@
+[Unit]
+Description=torspider-frontend
+
+[Service]
+User=torspider
+WorkingDirectory=/home/torspider/TorSpider-Frontend
+ExecStart=/bin/bash -c '/usr/bin/python3 /home/torspider/TorSpider-Frontend/frontend_manage.py run 2>&1'
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
