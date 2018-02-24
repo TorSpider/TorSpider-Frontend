@@ -78,10 +78,10 @@ def make_config():
         }
         with open(os.path.join(script_dir, 'frontend.cfg'), 'w') as config_file:
             default_config.write(config_file)
-        print('Default configuration stored in frontend.cfg.')
-        print('Please edit frontend.cfg before running TorSpider frontend.')
+        print('[+] Default configuration stored in frontend.cfg.')
+        print('[+] Please edit frontend.cfg before running TorSpider frontend.')
     else:
-        print('The frontend.cfg file already exists.  Please delete it to create a fresh one.')
+        print('[!] The frontend.cfg file already exists.  Please delete it to create a fresh one.')
 
 
 server_config = read_config()
