@@ -25,6 +25,9 @@ manager.add_command('db', MigrateCommand)
 
 @manager.command
 def run():
+    '''
+    Run the server. 
+    '''
     if not os.path.isdir(os.path.join(script_dir, 'logs')):
         os.makedirs(os.path.join(script_dir, 'logs'))
     formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
@@ -36,11 +39,13 @@ def run():
     log.addHandler(handler)
     app.logger.addHandler(handler)
     port = int(environ.get('PORT', app.config['LISTEN_PORT']))
+    addr = environ.get('LISTEN_ADDR', app.config['LISTEN_ADDR'])
     if app.config['USETLS']:
         context = (os.path.join(script_dir, 'certs', 'server.crt'), os.path.join(script_dir, 'certs', 'server.key'))
-        app.run(host='0.0.0.0', port=port, threaded=True, ssl_context=context)
+        app.run(host=addr, port=port, threaded=True, ssl_context=context)
     else:
-        app.run(host='0.0.0.0', port=port, threaded=True)
+        app.run(host=addr, port=port, threaded=True)
+
 
 if __name__ == '__main__':
     if sys.version_info[0] < 3:
