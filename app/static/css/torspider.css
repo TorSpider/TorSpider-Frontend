@@ -131,7 +131,7 @@ a.pure-button-primary {
  */
 
 .splash-container {
-    background: rgba(255, 255, 255, 0);
+    background: #1f8dd6;
     z-index: 1;
     overflow: hidden;
     /* The following styles are required for the "scroll-over" effect */
@@ -158,8 +158,8 @@ a.pure-button-primary {
 
 .formarea {
     /* absolute center .splash within .splash-container */
-    width: 80%;
-    height: 50%;
+    width: 50%;
+    height: 30%;
     margin: auto;
     position: absolute;
     top: 20px;
@@ -222,7 +222,7 @@ a.pure-button-primary {
     height: 90%;
     margin: auto;
     position: absolute;
-    top: 70px;
+    top: 100px;
     left: 0;
     bottom: 0;
     right: 0;
