@@ -57,7 +57,7 @@ def make_config():
             'user': 'torspider',
             'password': 'password',
             'host': '127.0.0.1',
-            'database': 'TorSpider'
+            'database': 'TorSpider-Frontend'
         }
         default_config['Flask'] = {
             'SECRET_KEY': 'please-change-me',

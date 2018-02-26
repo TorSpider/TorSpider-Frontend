@@ -4,4 +4,12 @@ flask_migrate
 flask_sqlalchemy
 flask_restless
 flask_login
+Flask-WTF
+flask-table
+Flask-BasicAuth
+wtforms_alchemy
+wtforms
 psycopg2
+bcrypt
+bleach
+requests
