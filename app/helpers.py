@@ -7,6 +7,8 @@ import urllib.parse
 import string
 import random
 
+header = {"Content-Type": "application/json"}
+
 def create_api_key():
     """
     Create an API key from a random string
@@ -38,13 +40,9 @@ def generate_password():
     return ''.join((random.choice(chars)) for x in range(pwdSize))
 
 def api_create(endpoint, data):
-    data = {
-        "page": "",
-        "field": ""
-    }
     r = requests.post(
-        app.config['api_url'] + endpoint,
-        headers=app.config['api_header'],
+        app.config['API_URL'] + endpoint,
+        headers=header,
         data=json.dumps(data),
         verify=False)
     if r.status_code == 201:
@@ -53,6 +51,19 @@ def api_create(endpoint, data):
     else:
         return {}
 
+
+def api_delete(endpoint, id):
+    r = requests.delete(
+        app.config['API_URL'] + endpoint + '/' + id,
+        headers=header,
+        verify=False)
+    print(r.status_code)
+    print(r.text)
+    if r.status_code == 204:
+        # If created then it returns the object data
+        return True
+    else:
+        return False
 
 def api_update(endpoint, data):
     query = {"filters": [
@@ -67,8 +78,8 @@ def api_update(endpoint, data):
         }]}
     data['q'] = query
     r = requests.patch(
-        app.config['api_url'] + endpoint,
-        headers=app.config['api_header'],
+        app.config['API_URL'] + endpoint,
+        headers=header,
         data=json.dumps(data),
         verify=False)
     if r.status_code == 200:
@@ -78,9 +89,9 @@ def api_update(endpoint, data):
         return {}
 
 
-def __get_query(self, endpoint, query):
+def api_get(endpoint, query):
     r = requests.get(
-        self.api_url + endpoint + '?q=' + urllib.parse.quote_plus(json.dumps(query)), verify=False)
+        app.config['API_URL'] + endpoint + '?q=' + urllib.parse.quote_plus(json.dumps(query)), verify=False)
     if r.status_code == 200:
         # If created then it returns the object data
         return json.loads(r.text).get('objects')

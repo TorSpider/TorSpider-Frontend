@@ -5,7 +5,6 @@ from app.models import Invites
 from app.tables import Invite, InviteTable
 from sqlalchemy import desc, asc
 from app.helpers import create_invite_code
-import datetime
 
 
 @app.route("/invites", methods=["GET"])

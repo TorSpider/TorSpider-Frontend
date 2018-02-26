@@ -1,17 +1,25 @@
 from flask_table import Table, BoolCol, DatetimeCol, Col, ButtonCol
 from flask import url_for
+import dateutil.parser
+from babel.dates import format_datetime
 
+class DateTimeStringCol(DatetimeCol):
+    def td_format(self, content):
+        try:
+            return format_datetime(dateutil.parser.parse(content).replace(microsecond=0), 'short')
+        except:
+            return ''
 
 # Nodes
 class NodesTable(Table):
-    classes = ['pure-table']
+    classes = ['pure-table', 'stretch']
     allow_sort = True
     unique_id = Col('Unique ID')
     api_key = Col('API Key')
     owner = Col('Owner')
     active = BoolCol('Active')
-    created = DatetimeCol('Create Date')
-    updated = DatetimeCol('Updated Date')
+    #created = DateTimeStringCol('Create Date')
+    #updated = DateTimeStringCol('Updated Date')
     delete = ButtonCol('Delete', 'delete_node', url_kwargs=dict(id='id'),
                        button_attrs={'class': 'pure-button button-error'})
     disable = ButtonCol('Disable', 'disable_node', url_kwargs=dict(id='id'),

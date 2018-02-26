@@ -222,6 +222,7 @@ a.pure-button-primary {
     height: 90%;
     margin: auto;
     position: absolute;
+    padding-right: 30px;
     top: 100px;
     left: 0;
     bottom: 0;
@@ -406,6 +407,11 @@ button-success,
     from {bottom: 30px; opacity: 1;}
     to {bottom: 60px; opacity: 0;}
 }
+
+.stretch{
+  width:100%;
+}
+
 /*
  * -- TABLET (AND UP) MEDIA QUERIES --
  * On tablets and other medium-sized devices, we want to customize some

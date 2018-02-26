@@ -38,6 +38,9 @@ def read_config():
                 'loglevel': logging.getLevelName(config['LOGGING'].get('loglevel')),
                 'apploglevel': logging.getLevelName(config['LOGGING'].get('apploglevel'))
             }
+            my_config['Backend'] = {
+                'API_URL': config['Backend'].get('API_URL')
+            }
             return my_config
         except Exception as e:
             print('Could not parse frontend.cfg. Please verify its syntax.')
@@ -78,6 +81,9 @@ def make_config():
             'loglevel': 'INFO',
             'apploglevel': 'CRITICAL'
         }
+        default_config['Backend'] = {
+            'API_URL': 'http://127.0.0.1/api/'
+        }
         with open(os.path.join(script_dir, 'frontend.cfg'), 'w') as config_file:
             default_config.write(config_file)
         print('[+] Default configuration stored in frontend.cfg.')
@@ -105,6 +111,7 @@ class ProductionConf(object):
     LISTEN_PORT = server_config['Flask'].get('LISTEN_PORT')
     LISTEN_ADDR = server_config['Flask'].get('LISTEN_ADDR')
     USETLS = server_config['Flask'].get('USETLS')
+    API_URL = server_config['Backend'].get('API_URL')
     WTF_CSRF_ENABLED = server_config['WTForms'].get('SQLALCHEMY_ECHO')
     WTF_CSRF_SECRET_KEY = server_config['WTForms'].get('WTF_CSRF_SECRET_KEY')
     SQLALCHEMY_ECHO = server_config['SQLAlchemy'].get('SQLALCHEMY_ECHO')

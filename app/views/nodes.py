@@ -5,8 +5,7 @@ from app.models import Nodes
 from app.tables import Node, NodesTable
 from sqlalchemy import desc, asc
 from sqlalchemy import or_
-from app.helpers import create_api_key, create_unqiue_id
-import datetime
+from app.helpers import create_api_key, create_unqiue_id, api_get, api_create, api_update, api_delete
 
 
 @app.route("/nodes", methods=["GET"])
@@ -19,13 +18,21 @@ def nodes():
     order = asc(sort) if sort_dir == "asc" else desc(sort)
     # Check if admin
     if current_user.check_role() >= 10:
-        the_nodes = db.session.query(Nodes).order_by(order).all()
+        query = {"filters": [], "order_by": [{"field": sort, "direction": sort_dir}]}
+        the_nodes = api_get('nodes', query)
+        if not the_nodes:
+            the_nodes = []
+        # the_nodes = db.session.query(Nodes).order_by(order).all()
         # Populate the table
         table = NodesTable(the_nodes)
         return render_template("nodes.html", table=table)
     # Check if user
     elif current_user.check_role() >= 3:
-        the_nodes = db.session.query(Nodes).filter(Nodes.owner == current_user.username).order_by(order).all()
+        query = {"filters": [{"op": "eq", "name": "owner", "val": current_user.username}],
+                 "order_by": [{"field": sort, "direction": sort_dir}]}
+        the_nodes = api_get('nodes', query)
+        if not the_nodes:
+            the_nodes = []
         # Populate the table
         table = NodesTable(the_nodes)
         return render_template("nodes.html", table=table)
@@ -39,8 +46,9 @@ def nodes():
 def new_node():
     if current_user.check_role() >= 3:
         # For now let's limit a user to 5 nodes.
-        node_count = db.session.query(Nodes).filter(Nodes.owner == current_user.username).count()
-        if node_count >= 5:
+        query = {"filters": []}
+        node_count = api_get('nodes', query)
+        if len(node_count) >= 5:
             flash('You have reached the limit of 5 nodes.')
             return redirect(url_for('nodes'))
         check_dup = True
@@ -49,20 +57,28 @@ def new_node():
         while check_dup:
             unique_id = create_unqiue_id()
             api_key = create_api_key()
-            check_dup = db.session.query(Nodes).filter(
-                or_(Nodes.unique_id == unique_id, Nodes.api_key == api_key)).first()
-        new_node = Nodes()
-        new_node.owner = current_user.username
-        new_node.unique_id = unique_id
-        new_node.api_key = api_key
-        new_node.active = True
-        try:
-            db.session.add(new_node)
-            db.session.commit()
+            query = {"filters": [{"or": [{
+                "op": "eq",
+                "name": "unique_id",
+                "val": unique_id
+                }, {
+                "op": "eq",
+                "name": "api_key",
+                "val": api_key
+                }]}],
+                "single": True}
+            check_dup = api_get('nodes', query)
+        data = {
+            "owner": current_user.username,
+            "unique_id": unique_id,
+            "api_key": api_key,
+            "active": True
+        }
+        add_node = api_create('nodes', data)
+        if add_node:
             flash("Node {} added successfully.".format(unique_id))
             return redirect(url_for('nodes'))
-        except:
-            db.session.rollback()
+        else:
             flash("Error adding node.  Please try again.")
             return redirect(url_for('nodes'))
     else:
@@ -77,26 +93,24 @@ def delete_node():
         flash('Node ID not provided.')
         return redirect(url_for('nodes'))
     if current_user.check_role() >= 10:
-        del_node = db.session.query(Nodes).filter(Nodes.id == id).first()
-        try:
-            db.session.delete(del_node)
-            db.session.commit()
-            flash("Node {} deleted successfully.".format(del_node.unique_id))
+        del_node = api_delete('nodes', id)
+        if del_node:
+            flash("Node deleted successfully.")
             return redirect(url_for('nodes'))
-        except:
+        else:
             flash("Error deleting node. Please try again.")
             return redirect(url_for('nodes'))
     elif current_user.check_role() >= 3:
-        del_node = db.session.query(Nodes).filter(Nodes.id == id).first()
-        if del_node.owner != current_user.username:
+        query = {"filters": [{"op": "eq", "name": "id", "val": id}]}
+        test_node = api_get('nodes', query)
+        if test_node.get('owner') != current_user.username:
             flash("Permission denied.")
             return redirect(url_for('nodes'))
-        try:
-            db.session.delete(del_node)
-            db.session.commit()
-            flash("Node {} deleted successfully.".format(del_node.unique_id))
+        del_node = api_delete('nodes', id)
+        if del_node:
+            flash("Node deleted successfully.")
             return redirect(url_for('nodes'))
-        except:
+        else:
             flash("Error deleting node. Please try again.")
             return redirect(url_for('nodes'))
     else:
