@@ -7,7 +7,6 @@ import urllib.parse
 import string
 import random
 
-header = {"Content-Type": "application/json"}
 
 def create_api_key():
     """
@@ -33,16 +32,25 @@ def create_invite_code():
     return str(uuid.uuid4())
 
 
+def gen_api_header():
+    myhead = dict()
+    myhead['Content-Type'] = 'application/json'
+    myhead['Authorization'] = 'Token {}'.format(app.config['API_KEY'])
+    myhead['Authorization-Node'] = app.config['API_NODE']
+    return myhead
+
+
 def generate_password():
     # Just alphanumeric characters
     chars = string.ascii_letters + string.digits
-    pwdSize = 20
-    return ''.join((random.choice(chars)) for x in range(pwdSize))
+    pwdsize = 20
+    return ''.join((random.choice(chars)) for x in range(pwdsize))
+
 
 def api_create(endpoint, data):
     r = requests.post(
         app.config['API_URL'] + endpoint,
-        headers=header,
+        headers=gen_api_header(),
         data=json.dumps(data),
         verify=False)
     if r.status_code == 201:
@@ -52,34 +60,21 @@ def api_create(endpoint, data):
         return {}
 
 
-def api_delete(endpoint, id):
+def api_delete(endpoint, id_):
     r = requests.delete(
-        app.config['API_URL'] + endpoint + '/' + id,
-        headers=header,
+        app.config['API_URL'] + endpoint + '/' + id_,
+        headers=gen_api_header(),
         verify=False)
-    print(r.status_code)
-    print(r.text)
     if r.status_code == 204:
-        # If created then it returns the object data
         return True
     else:
         return False
 
+
 def api_update(endpoint, data):
-    query = {"filters": [
-        {
-            "op": "eq",
-            "name": "page",
-            "val": ""
-        }, {
-            "op": "eq",
-            "name": "field",
-            "val": ""
-        }]}
-    data['q'] = query
     r = requests.patch(
         app.config['API_URL'] + endpoint,
-        headers=header,
+        headers=gen_api_header(),
         data=json.dumps(data),
         verify=False)
     if r.status_code == 200:
@@ -91,11 +86,11 @@ def api_update(endpoint, data):
 
 def api_get(endpoint, query):
     r = requests.get(
-        app.config['API_URL'] + endpoint + '?q=' + urllib.parse.quote_plus(json.dumps(query)), verify=False)
+        app.config['API_URL'] + endpoint + '?q=' + urllib.parse.quote_plus(json.dumps(query)),
+        headers=gen_api_header(),
+        verify=False)
     if r.status_code == 200:
         # If created then it returns the object data
         return json.loads(r.text).get('objects')
     else:
         return {}
-
-

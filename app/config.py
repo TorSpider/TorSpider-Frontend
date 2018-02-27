@@ -39,7 +39,9 @@ def read_config():
                 'apploglevel': logging.getLevelName(config['LOGGING'].get('apploglevel'))
             }
             my_config['Backend'] = {
-                'API_URL': config['Backend'].get('API_URL')
+                'API_URL': config['Backend'].get('API_URL'),
+                'API_KEY': config['Backend'].get('API_KEY'),
+                'API_NODE': config['Backend'].get('API_NODE')
             }
             return my_config
         except Exception as e:
@@ -47,10 +49,11 @@ def read_config():
             print('Error: {}'.format(e))
             sys.exit(0)
 
+
 def make_config():
-    '''
+    """
     Create the initial config file.
-    '''
+    """
     if not os.path.exists(os.path.join(script_dir, 'frontend.cfg')):
         # If we don't yet have a configuration file, make one and tell the
         # user to set it up before continuing.
@@ -82,7 +85,9 @@ def make_config():
             'apploglevel': 'CRITICAL'
         }
         default_config['Backend'] = {
-            'API_URL': 'http://127.0.0.1/api/'
+            'API_URL': 'http://127.0.0.1/api/',
+            'API_KEY': 'Specify_API_Key',
+            'API_NODE': 'Specify_API_Node'
         }
         with open(os.path.join(script_dir, 'frontend.cfg'), 'w') as config_file:
             default_config.write(config_file)
@@ -112,6 +117,8 @@ class ProductionConf(object):
     LISTEN_ADDR = server_config['Flask'].get('LISTEN_ADDR')
     USETLS = server_config['Flask'].get('USETLS')
     API_URL = server_config['Backend'].get('API_URL')
+    API_KEY = server_config['Backend'].get('API_KEY')
+    API_NODE = server_config['Backend'].get('API_NODE')
     WTF_CSRF_ENABLED = server_config['WTForms'].get('SQLALCHEMY_ECHO')
     WTF_CSRF_SECRET_KEY = server_config['WTForms'].get('WTF_CSRF_SECRET_KEY')
     SQLALCHEMY_ECHO = server_config['SQLAlchemy'].get('SQLALCHEMY_ECHO')

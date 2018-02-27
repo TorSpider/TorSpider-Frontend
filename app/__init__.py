@@ -1,7 +1,8 @@
 from os import environ
+
 from flask import Flask
+from flask_login import login_required
 from flask_sqlalchemy import SQLAlchemy
-from flask_login import current_user, login_required
 from flask_wtf.csrf import CSRFProtect
 
 csrf = CSRFProtect()

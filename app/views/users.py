@@ -1,11 +1,12 @@
+import bcrypt
 from flask import render_template, request, flash, abort, redirect, url_for
 from flask_login import login_required, current_user
-from app import app, db
-from app.models import User
-from app.tables import Users, UsersTable
 from sqlalchemy import desc, asc
+
+from app import app, db
 from app.helpers import generate_password
-import bcrypt
+from app.models import User
+from app.tables import UsersTable
 
 
 @app.route("/users", methods=["GET"])
@@ -30,12 +31,12 @@ def users():
 @app.route("/users/delete", methods=["POST"])
 @login_required
 def delete_user():
-    id = request.args.get('id')
-    if not id:
+    id_ = request.args.get('id')
+    if not id_:
         flash('User ID not provided.')
         return redirect(url_for('users'))
     if current_user.check_role() >= 10:
-        del_user = db.session.query(User).filter(User.id == id).first()
+        del_user = db.session.query(User).filter(User.id == id_).first()
         try:
             db.session.delete(del_user)
             db.session.commit()
@@ -51,12 +52,12 @@ def delete_user():
 @app.route("/users/disable", methods=["POST"])
 @login_required
 def disable_user():
-    id = request.args.get('id')
-    if not id:
+    id_ = request.args.get('id')
+    if not id_:
         flash('User ID not provided.')
         return redirect(url_for('users'))
     if current_user.check_role() >= 10:
-        disable_user = db.session.query(User).filter(User.id == id).first()
+        disable_user = db.session.query(User).filter(User.id == id_).first()
         try:
             disable_user.active = False
             db.session.merge(disable_user)
@@ -73,12 +74,12 @@ def disable_user():
 @app.route("/users/regen_password", methods=["POST"])
 @login_required
 def regen_password():
-    id = request.args.get('id')
-    if not id:
+    id_ = request.args.get('id')
+    if not id_:
         flash('Node ID not provided.')
         return redirect(url_for('users'))
     if current_user.check_role() >= 10:
-        the_user = db.session.query(User).filter(User.id == id).first()
+        the_user = db.session.query(User).filter(User.id == id_).first()
         try:
             thepassword = generate_password()
             the_user.password = bcrypt.hashpw(thepassword.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')

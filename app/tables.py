@@ -3,12 +3,14 @@ from flask import url_for
 import dateutil.parser
 from babel.dates import format_datetime
 
+
 class DateTimeStringCol(DatetimeCol):
     def td_format(self, content):
         try:
             return format_datetime(dateutil.parser.parse(content).replace(microsecond=0), 'short')
         except:
             return ''
+
 
 # Nodes
 class NodesTable(Table):
@@ -18,12 +20,12 @@ class NodesTable(Table):
     api_key = Col('API Key')
     owner = Col('Owner')
     active = BoolCol('Active')
-    #created = DateTimeStringCol('Create Date')
-    #updated = DateTimeStringCol('Updated Date')
+    # created = DateTimeStringCol('Create Date')
+    # updated = DateTimeStringCol('Updated Date')
     delete = ButtonCol('Delete', 'delete_node', url_kwargs=dict(id='id'),
                        button_attrs={'class': 'pure-button button-error'})
     disable = ButtonCol('Disable', 'disable_node', url_kwargs=dict(id='id'),
-                       button_attrs={'class': 'pure-button button-secondary'})
+                        button_attrs={'class': 'pure-button button-secondary'})
     regen = ButtonCol('Regen API Key', 'regen_node_api', url_kwargs=dict(id='id'),
                       button_attrs={'class': 'pure-button button-secondary'})
 

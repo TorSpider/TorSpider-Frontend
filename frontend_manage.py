@@ -27,9 +27,9 @@ manager.add_command('db', MigrateCommand)
 
 @manager.command
 def create_admin_user(username, password):
-    '''
+    """
     Create an admin user.
-    '''
+    """
     newuser = User()
     newuser.username = username
     newuser.password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
@@ -47,10 +47,9 @@ def create_admin_user(username, password):
 
 @manager.command
 def create_invite_code():
-    '''
+    """
     Create an invite code
-    :return: 
-    '''
+    """
     invite = Invites()
     invite.invite_code = str(uuid.uuid4())
     invite.active = True
@@ -65,9 +64,9 @@ def create_invite_code():
 
 @manager.command
 def initdb():
-    '''
+    """
     Initialize the database and create all tables.
-    '''
+    """
     print("[+] Initializing database...")
     print("[+] Creating tables...")
     db.create_all(bind=None)
@@ -76,9 +75,9 @@ def initdb():
 
 @manager.command
 def seed():
-    '''
+    """
     Seed the database with the initial data required.
-    '''
+    """
     # We'll populate the database with some default values. These
     # pages are darknet indexes, so they should be a good starting
     # point.
@@ -99,9 +98,9 @@ def seed():
 
 @manager.command
 def run():
-    '''
+    """
     Run the server.
-    '''
+    """
     if not os.path.isdir(os.path.join(script_dir, 'logs')):
         os.makedirs(os.path.join(script_dir, 'logs'))
     formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")

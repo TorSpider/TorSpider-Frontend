@@ -1,10 +1,11 @@
 from flask import render_template, request, flash, abort, redirect, url_for
 from flask_login import login_required, current_user
-from app import app, db
-from app.models import Invites
-from app.tables import Invite, InviteTable
 from sqlalchemy import desc, asc
+
+from app import app, db
 from app.helpers import create_invite_code
+from app.models import Invites
+from app.tables import InviteTable
 
 
 @app.route("/invites", methods=["GET"])
@@ -56,12 +57,12 @@ def new_invite():
 @app.route("/invites/delete", methods=["POST"])
 @login_required
 def delete_invite():
-    id = request.args.get('id')
-    if not id:
+    id_ = request.args.get('id')
+    if not id_:
         flash('Invite code ID not provided.')
         return redirect(url_for('invites'))
     if current_user.check_role() >= 10:
-        del_invite_code = db.session.query(Invites).filter(Invites.id == id).first()
+        del_invite_code = db.session.query(Invites).filter(Invites.id == id_).first()
         try:
             db.session.delete(del_invite_code)
             db.session.commit()
@@ -78,12 +79,12 @@ def delete_invite():
 @login_required
 def disable_invite():
     # I'm doing provide a disable function for now, perhaps update it to fill edit later.
-    id = request.args.get('id')
-    if not id:
+    id_ = request.args.get('id')
+    if not id_:
         flash('Invite code ID not provided.')
         return redirect(url_for('invites'))
     if current_user.check_role() >= 10:
-        the_invite = db.session.query(Invites).filter(Invites.id == id).first()
+        the_invite = db.session.query(Invites).filter(Invites.id == id_).first()
         the_invite.active = False
         try:
             db.session.merge(the_invite)

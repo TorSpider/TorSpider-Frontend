@@ -1,17 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms_alchemy import model_form_factory
 from wtforms import validators
-from wtforms.fields import StringField, BooleanField, SelectMultipleField, PasswordField, SelectField
-from app import db
-
-# Required for WTForms-Alchemy to work with Flask-WTF
-BaseModelForm = model_form_factory(FlaskForm, strip_string_fields=True)
-
-
-class ModelForm(BaseModelForm):
-    @classmethod
-    def get_session(self):
-        return db.session
+from wtforms.fields import StringField, PasswordField
 
 
 class LoginForm(FlaskForm):

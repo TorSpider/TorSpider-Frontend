@@ -1,3 +1,6 @@
+babel
+python-dateutil
+sqlalchemy
 flask
 flask_script
 flask_migrate
@@ -7,7 +10,6 @@ flask_login
 Flask-WTF
 flask-table
 Flask-BasicAuth
-wtforms_alchemy
 wtforms
 psycopg2
 bcrypt
