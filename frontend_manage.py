@@ -104,7 +104,8 @@ def run():
     if not os.path.isdir(os.path.join(script_dir, 'logs')):
         os.makedirs(os.path.join(script_dir, 'logs'))
     formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
-    handler = TimedRotatingFileHandler(os.path.join(script_dir, 'logs', 'TorSpider.log'), when='midnight', interval=1)
+    handler = TimedRotatingFileHandler(os.path.join(script_dir, 'logs', 'TorSpider.log'), when='midnight',
+                                       backupCount=7, interval=1)
     handler.setLevel(app.config['LOG_LEVEL'])
     handler.setFormatter(formatter)
     log = logging.getLogger('werkzeug')
