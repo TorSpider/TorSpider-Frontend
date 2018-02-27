@@ -68,7 +68,7 @@ def make_config():
         }
         default_config['Flask'] = {
             'SECRET_KEY': uuid.uuid4(),
-            'USETLS': False,
+            'USETLS': True,
             'DEBUG': False,
             'LISTEN_PORT': 1081,
             'LISTENING_ADDR': '127.0.0.1'
