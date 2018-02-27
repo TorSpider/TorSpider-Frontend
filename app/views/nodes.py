@@ -2,7 +2,7 @@ from flask import render_template, request, flash, abort, redirect, url_for
 from flask_login import login_required, current_user
 
 from app import app
-from app.helpers import create_api_key, create_unqiue_id, api_get, api_create, api_update, api_delete
+from app.helpers import create_api_key, create_unique_id, api_get, api_create, api_update, api_delete
 from app.tables import NodesTable
 
 
@@ -51,7 +51,7 @@ def new_node():
         # Keep trying to create unique keys until they don't exist in the db.  This should really only run once.
         # Collisions should be very low.
         while check_dup:
-            unique_id = create_unqiue_id()
+            unique_id = create_unique_id()
             api_key = create_api_key()
             query = {"filters": [{"or": [{
                 "op": "eq",

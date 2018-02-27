@@ -16,7 +16,7 @@ def create_api_key():
     return hashlib.sha1(uuid.uuid4().hex.encode('utf-8')).hexdigest()
 
 
-def create_unqiue_id():
+def create_unique_id():
     """
     Create a unique ID that is used by the nodes
     :return: A unqiue 16 character ID.
