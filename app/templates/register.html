@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="formarea">
+        <form class="pure-form pure-form-stacked" method="POST" action="{{ url_for('register') }}">
+            <fieldset>
+                {{ form.csrf_token }}
+                {{ form.username.label }} {{ form.username(size=20) }}
+                {{ form.password.label }} {{ form.password(size=20) }}
+                {{ form.invitecode.label }} {{ form.invitecode(size=36) }}
+                <input type="submit" class="pure-button" value="Register">
+            </fieldset>
+        </form>
+    </div>
+{% endblock %}

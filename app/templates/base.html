@@ -1,29 +1,105 @@
+{% from "macros.html" import nav_link with context %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
-{% block head %}
-    <title>{% block title %}{% endblock %}</title>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    {% block assets %}
-        {% include "assets.html" %}
-        
+    {% block head %}
+        <title>{% block title %}{% endblock %}</title>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        {% block assets %}
+            {% include "assets.html" %}
+
+        {% endblock %}
+        {% block scripts %}
+            {% include "scripts.html" %}
+        {% endblock %}
     {% endblock %}
-    {% block scripts %}
-        {% include "scripts.html" %}
-    {% endblock %}
-    <script type="text/javascript">
-        function main () {
-            // Step 1. Create a graph:
-            var graph = Viva.Graph.graph();
-            
-            renderer.run();
-        }
-    </script>
-{% endblock %}
 </head>
-<body onload='main()'>
-{{  new_body | safe }}
+<body>
+{% block body %}
+    {% include "flash_messages.html" %}
+    <div class="header">
+        <div class="home-menu pure-menu pure-menu-horizontal pure-menu-fixed">
+            <a class="pure-menu-heading" href="">TorSpider</a>
+
+            <ul class="pure-menu-list">
+                {{ nav_link('index', 'Home', 'fa-home') }}
+                {% if not current_user.is_authenticated %}
+                    {{ nav_link('register', 'Register', 'fa-briefcase') }}
+                {% endif %}
+                {% if current_user.is_authenticated %}
+                    {{ nav_link('nodes', 'Manage Nodes', 'fa-cube') }}
+                    {% if current_user.check_role() >= 10 %}
+                        {{ nav_link('invites', 'Manage Invites', 'fa-user-plus') }}
+                        {{ nav_link('users', 'Manage Users', 'fa-users') }}
+                    {% endif %}
+                    {{ nav_link('logout', 'Log Out', 'fa-sign-in-alt') }}
+                {% else %}
+                    {{ nav_link('login', 'Log In', 'fa-sign-in-alt') }}
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+    {% block content %}
+
+    {% endblock %}
+    {% if request.url_rule.endpoint == 'index' %}
+        {% block splash %}
+        {% endblock %}
+
+        <div class="content-wrapper">
+            <div class="content">
+
+                <h2 class="content-head is-center">Excepteur sint occaecat cupidatat.</h2>
+
+                <div class="pure-g">
+                    <div class="l-box pure-u-1 pure-u-md-1-2 pure-u-lg-1-4">
+
+                        <h3 class="content-subhead">
+                            <i class="fa fa-rocket"></i>
+                            Get Started Quickly
+                        </h3>
+                        <p>
+                            Phasellus eget enim eu lectus faucibus vestibulum. Suspendisse sodales pellentesque
+                            elementum.
+                        </p>
+                    </div>
+                    <div class="l-box pure-u-1 pure-u-md-1-2 pure-u-lg-1-4">
+                        <h3 class="content-subhead">
+                            <i class="fa fa-mobile"></i>
+                            Responsive Layouts
+                        </h3>
+                        <p>
+                            Phasellus eget enim eu lectus faucibus vestibulum. Suspendisse sodales pellentesque
+                            elementum.
+                        </p>
+                    </div>
+                    <div class="l-box pure-u-1 pure-u-md-1-2 pure-u-lg-1-4">
+                        <h3 class="content-subhead">
+                            <i class="fa fa-th-large"></i>
+                            Modular
+                        </h3>
+                        <p>
+                            Phasellus eget enim eu lectus faucibus vestibulum. Suspendisse sodales pellentesque
+                            elementum.
+                        </p>
+                    </div>
+                    <div class="l-box pure-u-1 pure-u-md-1-2 pure-u-lg-1-4">
+                        <h3 class="content-subhead">
+                            <i class="fa fa-check-square-o"></i>
+                            Plays Nice
+                        </h3>
+                        <p>
+                            Phasellus eget enim eu lectus faucibus vestibulum. Suspendisse sodales pellentesque
+                            elementum.
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}
 </body>
 </html>

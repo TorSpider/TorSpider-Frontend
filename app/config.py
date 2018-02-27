@@ -2,6 +2,7 @@ import sys
 import os
 import logging
 import configparser
+import uuid
 
 script_dir = os.path.dirname(os.path.realpath(sys.argv[0]))
 
@@ -38,16 +39,22 @@ def read_config():
                 'loglevel': logging.getLevelName(config['LOGGING'].get('loglevel')),
                 'apploglevel': logging.getLevelName(config['LOGGING'].get('apploglevel'))
             }
+            my_config['Backend'] = {
+                'API_URL': config['Backend'].get('API_URL'),
+                'API_KEY': config['Backend'].get('API_KEY'),
+                'API_NODE': config['Backend'].get('API_NODE')
+            }
             return my_config
         except Exception as e:
             print('Could not parse frontend.cfg. Please verify its syntax.')
             print('Error: {}'.format(e))
             sys.exit(0)
 
+
 def make_config():
-    '''
+    """
     Create the initial config file.
-    '''
+    """
     if not os.path.exists(os.path.join(script_dir, 'frontend.cfg')):
         # If we don't yet have a configuration file, make one and tell the
         # user to set it up before continuing.
@@ -57,14 +64,14 @@ def make_config():
             'user': 'torspider',
             'password': 'password',
             'host': '127.0.0.1',
-            'database': 'TorSpider'
+            'database': 'TorSpider-Frontend'
         }
         default_config['Flask'] = {
-            'SECRET_KEY': 'please-change-me',
-            'USETLS': False,
+            'SECRET_KEY': uuid.uuid4(),
+            'USETLS': True,
             'DEBUG': False,
             'LISTEN_PORT': 1081,
-            'LISTENING_ADDR': '0.0.0.0'
+            'LISTENING_ADDR': '127.0.0.1'
         }
         default_config['SQLAlchemy'] = {
             'SQLALCHEMY_ECHO': False,
@@ -72,11 +79,16 @@ def make_config():
         }
         default_config['WTForms'] = {
             'WTF_CSRF_ENABLED': True,
-            'WTF_CSRF_SECRET_KEY': 'please-change-me'
+            'WTF_CSRF_SECRET_KEY': uuid.uuid4()
         }
         default_config['LOGGING'] = {
             'loglevel': 'INFO',
             'apploglevel': 'CRITICAL'
+        }
+        default_config['Backend'] = {
+            'API_URL': 'http://127.0.0.1/api/',
+            'API_KEY': 'Specify_API_Key',
+            'API_NODE': 'Specify_API_Node'
         }
         with open(os.path.join(script_dir, 'frontend.cfg'), 'w') as config_file:
             default_config.write(config_file)
@@ -105,6 +117,9 @@ class ProductionConf(object):
     LISTEN_PORT = server_config['Flask'].get('LISTEN_PORT')
     LISTEN_ADDR = server_config['Flask'].get('LISTEN_ADDR')
     USETLS = server_config['Flask'].get('USETLS')
+    API_URL = server_config['Backend'].get('API_URL')
+    API_KEY = server_config['Backend'].get('API_KEY')
+    API_NODE = server_config['Backend'].get('API_NODE')
     WTF_CSRF_ENABLED = server_config['WTForms'].get('SQLALCHEMY_ECHO')
     WTF_CSRF_SECRET_KEY = server_config['WTForms'].get('WTF_CSRF_SECRET_KEY')
     SQLALCHEMY_ECHO = server_config['SQLAlchemy'].get('SQLALCHEMY_ECHO')
