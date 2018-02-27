@@ -38,7 +38,7 @@ server {
         
         location @frontend {
                 proxy_set_header X-Real-IP $remote_addr;
-                proxy_pass http://127.0.0.1:1081;
+                proxy_pass https://127.0.0.1:1081;
         }
 
 }
