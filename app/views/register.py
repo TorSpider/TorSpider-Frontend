@@ -2,6 +2,7 @@ from flask import render_template, request, flash, redirect, url_for
 from app import app, db
 from app.forms import RegisterForm
 from app.models import User, Invites
+from app.helpers import generate_password
 import bcrypt
 import bleach
 
@@ -9,9 +10,9 @@ import bleach
 @app.route("/register", methods=["GET", "POST"])
 def register():
     form = RegisterForm()
+    thepassword = generate_password()
     if form.validate_on_submit():
         username = request.form['username']
-        password = request.form['password'].strip()
         invitecode = request.form['invitecode'].strip()
         invite = db.session.query(Invites).filter(Invites.invite_code == invitecode, Invites.active == True).first()
         if invite:
@@ -20,7 +21,7 @@ def register():
             if bleach.clean(username) != username:
                 flash("Bad user name")
                 return render_template("register.html", form=form)
-            newuser.password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+            newuser.password = bcrypt.hashpw(thepassword.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
             newuser.role = 'User'
             try:
                 # Add user
@@ -31,7 +32,8 @@ def register():
                 db.session.merge(invite)
                 db.session.commit()
                 flash('User {} created.'.format(username))
-                return redirect(url_for('index'))
+                success_data = {'username': username, 'password': thepassword}
+                return render_template("register.html", form=form, success_data=success_data)
             except Exception as e:
                 flash('Failed to create user {}'.format(username))
                 db.session.rollback()
