@@ -93,3 +93,25 @@ def regen_password():
             return redirect(url_for('users'))
     else:
         abort(401)
+
+
+@app.route("/users/change_password", methods=["GET", "POST"])
+@login_required
+def change_password():
+    if current_user.check_role() >= 3:
+        the_user = db.session.query(User).filter(User.username == current_user.username).first()
+        try:
+            thepassword = generate_password()
+            the_user.password = bcrypt.hashpw(thepassword.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+            db.session.merge(the_user)
+            db.session.commit()
+            flash("Password regenerated successfully!".format(the_user.username))
+            return render_template("users_newpass.html", the_pass=thepassword, the_user=the_user.username)
+        except Exception as e:
+            print(e)
+            flash("Error updating user. Please try again.")
+            return redirect(url_for('users'))
+    else:
+        abort(401)
+
+
