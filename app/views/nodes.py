@@ -44,7 +44,7 @@ def new_node():
         # For now let's limit a user to 5 nodes.  Admins can have unlimited nodes.
         if current_user.check_role() >= 10:
             # We will just trick it into always being lower than 5
-            node_count = 0
+            node_count = []
         else:
             query = {"filters": [{
                 "op": "eq",
