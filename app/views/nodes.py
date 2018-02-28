@@ -106,9 +106,10 @@ def delete_node():
     elif current_user.check_role() >= 3:
         query = {"filters": [{"op": "eq", "name": "id", "val": id_}]}
         test_node = api_get('nodes', query)
-        if test_node.get('owner') != current_user.username:
-            flash("Permission denied.")
-            return redirect(url_for('nodes'))
+        if test_node:
+            if test_node[0].get('owner') != current_user.username:
+                flash("Permission denied.")
+                return redirect(url_for('nodes'))
         del_node = api_delete('nodes', id_)
         if del_node:
             flash("Node deleted successfully.")
