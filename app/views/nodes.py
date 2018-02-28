@@ -43,14 +43,15 @@ def new_node():
     if current_user.check_role() >= 3:
         # For now let's limit a user to 5 nodes.  Admins can have unlimited nodes.
         if current_user.check_role() >= 10:
-            query = {"filters": []}
+            # We will just trick it into always being lower than 5
+            node_count = 0
         else:
             query = {"filters": [{
                 "op": "eq",
                 "name": "owner",
                 "val": current_user.username
             }]}
-        node_count = api_get('nodes', query)
+            node_count = api_get('nodes', query)
         if len(node_count) >= 5:
             flash('You have reached the limit of 5 nodes.')
             return redirect(url_for('nodes'))
