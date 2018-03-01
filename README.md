@@ -4,7 +4,7 @@ A web frontend for exploring the information collected by TorSpider.
 
 ## Installation
 
-# First Steps
+### First Steps
 
 Update your app/config.py file with the PostgreSQL DB settings and ensure the database is created. You should not use the same database for the frontend as you do for the backend. **Note:** The frontend node name and key are generated using the backend_manage.py script in the backend. See the backend installation instructions for more details.
 
@@ -23,7 +23,18 @@ python frontend_manage.py create_admin_user [user] [pass]
 ```
 Replace [user] and [pass] with the desired username and password.
 
-### Setting Up the Frontend as a Service
+### SSL Certificates
+
+In order to encrypt communication with the backend API, you'll need SSL certificates. You can obtain these from a number of sources, or generate your own. Once you've got them, you'll need to save them in the `/etc/nginx/certs/torspider/` folder. You should have the following two files:
+
+`/etc/nginx/certs/torspider/cert.crt`
+`/etc/nginx/certs/torspider/cert.key`
+
+Once those certificates are in place, you should be able to run the frontend.
+
+**Note:** These certificates are the same certificates as the ones used in the backend installation.
+
+### Installing the Frontend as a Service
 
 If you'd like to install the backend as a service:
 Please note, we assume torspider is installed as the torpsider user in /home/torspider.
@@ -40,5 +51,21 @@ Run it as a service:
 
 You are now running your frontend, exposed on http://your_ip:1081
 
-## Running with Nginx
-If you already set up the backend with Nginx, you can access the url with http://your_ip
+## Set up Nginx
+Nginx is used to expose both the frontend (1081) and backend (1080) websites on one port (80) to regular users.
+Ensure your have Nginx installed: `apt-get install nginx`
+
+Copy one of the provided nginx config files to /etc/nginx/sites-available.
+
+If you are installing the frontend on a separate system from the backend, copy the frontend configuration as follows:
+
+`cp nginx_conf/frontend /etc/nginx/sites-available/default`
+
+However, if you are running both the backend and frontend on the same system, copy the combined configuration as follows:
+
+`cp nginx_conf/combined /etc/nginx/sites-available/default`
+
+After copying the appropriate configuration file, restart Nginx:
+`service nginx restart`
+
+Once this is complete, you should be able to access the frontend from http://your_ip/.
