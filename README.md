@@ -6,10 +6,17 @@ A web frontend for exploring the information collected by TorSpider.
 
 ### First Steps
 
-Update your app/config.py file with the PostgreSQL DB settings and ensure the database is created. You should not use the same database for the frontend as you do for the backend. **Note:** The frontend node name and key are generated using the backend_manage.py script in the backend. See the backend installation instructions for more details.
-
-Ensure you have installed the requirements:
+First, ensure you have installed the requirements:
 `pip3 install -r requirements.txt`
+
+Next, run the backend_manage.py script once to generate the backend.cfg file:
+```
+$ python frontend_manage.py
+[+] Default configuration stored in frontend.cfg.
+[+] Please edit frontend.cfg before running TorSpider frontend.
+```
+
+Update your app/config.py file with the PostgreSQL DB settings and ensure the database is created. You should not use the same database for the frontend as you do for the backend. **Note:** The frontend node name and key are generated using the backend_manage.py script in the backend. See the backend installation instructions for more details.
 
 Next, you'll need to initialize the frontend database and seed it with values:
 ```
