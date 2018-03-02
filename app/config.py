@@ -86,7 +86,7 @@ def make_config():
             'apploglevel': 'CRITICAL'
         }
         default_config['Backend'] = {
-            'API_URL': 'http://127.0.0.1/api/',
+            'API_URL': 'https://127.0.0.1/api/',
             'API_KEY': 'Specify_API_Key',
             'API_NODE': 'Specify_API_Node'
         }
