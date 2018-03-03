@@ -1,5 +1,5 @@
 #! /bin/bash
-# A script to install the backend
+# A script to install the frontend
 if ! type strings > /dev/null; then
   echo "[-] You need to install strings.  Run sudo apt-get install -y binutils"
   exit 1
@@ -7,6 +7,7 @@ fi
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 frontend_user=$(who am i | awk '{print $1}')
+postgres_user=$frontend_user
 postgres_user_pass=$(strings /dev/urandom | grep -o '[[:alnum:]]' | head -n 15 | tr -d '\n'; echo)
 # 1 = false 0=true
 self_signed=1
@@ -17,6 +18,20 @@ check_root() {
        echo "[+] Run: sudo bash install.sh" 
        exit 1
     fi
+}
+
+check_same_server() {
+    read -p "[?] Are you installing the frontend on the same server as the backend? (Y/n)? " answer
+    case ${answer:0:1} in
+        n|N )
+            echo "[-] Ok. We don't need to do anything special."
+            exit 1
+        ;;
+        * )
+            echo "[+] Ok. Reconfiguring..."
+            postgres_user=$postgres_user-frontend
+        ;;
+    esac
 }
 
 check_user() {
@@ -53,7 +68,7 @@ update_and_install_apt_packages() {
 }
 
 setup_postgres() {
-    read -p "[?] Would you like to configure the PostgreSQL database for Torspider Backend? (Y/n)? " answer
+    read -p "[?] Would you like to configure the PostgreSQL database for Torspider Frontend? (Y/n)? " answer
         case ${answer:0:1} in
             n|N )
                 echo "[+] Ok. Skipping PostgreSQL configuration."
@@ -61,12 +76,12 @@ setup_postgres() {
             * )
                 echo "[+] Creating database TorSpider-Frontend."
                 sudo -u postgres createdb TorSpider-Frontend
-                echo "[+] Creating postgres user $frontend_user"
-                sudo -u postgres createuser $frontend_user
+                echo "[+] Creating postgres user $postgres_user"
+                sudo -u postgres createuser $postgres_user
                 echo "[+] Changing postgres user password to: $postgres_user_pass"
-                sudo -u postgres psql -c "alter user $frontend_user with encrypted password '$postgres_user_pass';"
-                echo "[+] Granting all privileges on db TorSpider-Frontend to postgres user $frontend_user"
-                sudo -u postgres psql -c "grant all privileges on database \"TorSpider-Frontend\" to $frontend_user;"
+                sudo -u postgres psql -c "alter user $postgres_user with encrypted password '$postgres_user_pass';"
+                echo "[+] Granting all privileges on db TorSpider-Frontend to postgres user $postgres_user"
+                sudo -u postgres psql -c "grant all privileges on database \"TorSpider-Frontend\" to $postgres_user;"
             ;;
         esac
 
@@ -105,9 +120,9 @@ create_selfsigned() {
                             if [  -f /etc/nginx/sites-available/default ]; then
                                 rm /etc/nginx/sites-available/default
                             fi
-                            echo "[+] Copying backend Nginx config files."
-                            cp $DIR/nginx_conf/backend /etc/nginx/sites-available/frontend
-                            ln -s /etc/nginx/sites-available/backend /etc/nginx/sites-enabled/frontend
+                            echo "[+] Copying frontend Nginx config files."
+                            cp $DIR/nginx_conf/frontend /etc/nginx/sites-available/frontend
+                            ln -s /etc/nginx/sites-available/frontend /etc/nginx/sites-enabled/frontend
                             systemctl restart nginx
                         ;;
                     esac
@@ -166,6 +181,6 @@ echo "======== Install completed ========"
 if [[ $EUID -ne 0 ]]; then
     echo "[+] You chose to not use a self-signed certificate.  Please read the readme file on how to configure a letsencrypt certificate. "
 fi
-echo "[+] Postgresql Username: $frontend_user"
+echo "[+] Postgresql Username: $postgres_user"
 echo "[+] Postgresql Password: $postgres_user_pass"
 echo "[+] Please follow the steps in the README to finalize the configuration."
