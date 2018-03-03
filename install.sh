@@ -139,11 +139,11 @@ install_service() {
             ;;
             * )
                 echo "[+] Registering service."
-                sed -i "s#REPLACE_THE_PATH#$DIR#g" $DIR/init/TorSpider-Frontend.service
-                cp $DIR/init/TorSpider-Frontend.service /etc/systemd/system/
+                sed -i "s#REPLACE_THE_PATH#$DIR#g" $DIR/init/torspider-frontend.service
+                cp $DIR/init/torspider-frontend.service /etc/systemd/system/
                 systemctl daemon-reload
                 echo "[+] Enabling service."
-                systemctl enable TorSpider-Frontend
+                systemctl enable torspider-frontend
             ;;
         esac
 }
