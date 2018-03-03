@@ -229,6 +229,23 @@ a.pure-button-primary {
     right: 0;
 }
 
+.normal-content {
+    background: rgba(255, 255, 255, 0);
+    z-index: 1;
+    overflow: hidden;
+}
+
+.normal-content-body {
+    width: 90%;
+    margin: auto;
+    position: absolute;
+    padding-right: 30px;
+    top: 100px;
+    left: 0;
+    bottom: 0;
+    right: 0;
+}
+
 /* We want to give the content area some more padding */
 .content {
     padding: 1em 1em 3em;
