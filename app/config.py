@@ -23,6 +23,8 @@ def read_config():
             my_config['Flask'] = {
                 'SECRET_KEY': config['Flask'].get('SECRET_KEY'),
                 'USETLS': config['Flask'].getboolean('USETLS'),
+                'CERT_FILE': config['Flask'].get('CERT_FILE'),
+                'CERT_KEY_FILE': config['Flask'].get('CERT_KEY_FILE'),
                 'DEBUG': config['Flask'].getboolean('DEBUG'),
                 'LISTEN_PORT': config['Flask'].getint('LISTEN_PORT'),
                 'LISTEN_ADDR': config['Flask'].get('LISTEN_ADDR')
@@ -71,7 +73,9 @@ def make_config():
             'USETLS': True,
             'DEBUG': False,
             'LISTEN_PORT': 1081,
-            'LISTENING_ADDR': '127.0.0.1'
+            'LISTENING_ADDR': '127.0.0.1',
+            'CERT_FILE': '/etc/nginx/certs/torspider/frontend.pem',
+            'CERT_KEY_FILE': '/etc/nginx/certs/torspider/frontend-key.pem'
         }
         default_config['SQLAlchemy'] = {
             'SQLALCHEMY_ECHO': False,
@@ -117,6 +121,8 @@ class ProductionConf(object):
     LISTEN_PORT = server_config['Flask'].get('LISTEN_PORT')
     LISTEN_ADDR = server_config['Flask'].get('LISTEN_ADDR')
     USETLS = server_config['Flask'].get('USETLS')
+    CERT_FILE = server_config['Flask'].get('CERT_FILE')
+    CERT_KEY_FILE = server_config['Flask'].get('CERT_KEY_FILE')
     API_URL = server_config['Backend'].get('API_URL')
     API_KEY = server_config['Backend'].get('API_KEY')
     API_NODE = server_config['Backend'].get('API_NODE')
