@@ -1,8 +1,8 @@
 {% extends "base.html" %}
 {% block content %}
     {% if success_data %}
-        <div class="data-content">
-            <div class="data-content-body">
+        <div class="normal-content">
+            <div class="normal-content">
                 <h3>User created successfully!</h3><br/>
                 <b>Username: {{ success_data.get('username') }}</b><br/>
                 <b>Password: {{ success_data.get('password') }}</b><br/>
