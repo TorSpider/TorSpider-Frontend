@@ -123,4 +123,4 @@ Let's get started:
 Run it as a service:
 `systemctl start torspider-frontend`
 
-You are now running your frontend website, exposed on https://youip
+You are now running your frontend website, exposed on https://yourip
