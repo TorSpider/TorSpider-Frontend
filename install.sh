@@ -29,7 +29,7 @@ check_same_server() {
         ;;
         * )
             echo "[+] Ok. Reconfiguring..."
-            postgres_user=$postgres_user-frontend
+            postgres_user="$postgres_user"frontend
         ;;
     esac
 }
@@ -37,6 +37,7 @@ check_same_server() {
 check_user() {
     echo "[+] Directory of TorSpider-Frontend: $DIR"
     echo "[+] Installation Username: $frontend_user"
+    echo "[+] Postgres Username: $postgres_user"
     read -p "[?] Are the directory and installation details correct? (Y/n)? " answer
     case ${answer:0:1} in
         n|N )
@@ -140,6 +141,7 @@ install_service() {
             * )
                 echo "[+] Registering service."
                 sed -i "s#REPLACE_THE_PATH#$DIR#g" $DIR/init/torspider-frontend.service
+                sed -i "s#REPLACE_THE_USER#$frontend_user#g" $DIR/init/torspider-frontend.service
                 cp $DIR/init/torspider-frontend.service /etc/systemd/system/
                 systemctl daemon-reload
                 echo "[+] Enabling service."
@@ -161,6 +163,8 @@ echo '=== TorSpider Frontend Installer ==='
 echo 'This installed will walk you through the installation process.'
 # check if root
 check_root
+# Check if we are installing on the same server
+check_same_server
 # Verify the user info
 check_user
 # Install apt-packages
