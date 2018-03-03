@@ -2,9 +2,9 @@
 Description=torspider-frontend
 
 [Service]
-User=torspider
-WorkingDirectory=/home/torspider/TorSpider-Frontend
-ExecStart=/bin/bash -c '/usr/bin/python3 /home/torspider/TorSpider-Frontend/frontend_manage.py run > /dev/null 2>&1'
+User=REPLACE_THE_USER
+WorkingDirectory=REPLACE_THE_PATH
+ExecStart=/bin/bash -c '/usr/bin/python3 REPLACE_THE_PATH/frontend_manage.py run > /dev/null 2>&1'
 Restart=always
 
 [Install]
