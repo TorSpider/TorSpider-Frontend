@@ -22,4 +22,4 @@ db = SQLAlchemy(app)
 
 from app import models
 from app import auth
-from app.views import index, register, login, logout, nodes, invites, users
+from app.views import index, register, login, logout, nodes, invites, users, top20
