@@ -5,7 +5,6 @@ from app import app
 
 
 @app.route("/top20", methods=["GET"])
-@login_required
 def top20():
     query = {"filters": []}
     top20pages = api_get('top20/pages', query, True)

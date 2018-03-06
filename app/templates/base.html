@@ -25,6 +25,7 @@
 
             <ul class="pure-menu-list">
                 {{ nav_link('index', 'Home', 'fa-home') }}
+                {{ nav_link('top20', 'Top 20 Lists', 'fa-th-list') }}
                 {% if not current_user.is_authenticated %}
                     {{ nav_link('register', 'Register', 'fa-briefcase') }}
                 {% endif %}
