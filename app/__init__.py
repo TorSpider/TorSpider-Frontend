@@ -4,9 +4,12 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf.csrf import CSRFProtect
 from werkzeug.contrib.fixers import ProxyFix
+import requests_cache
 
 csrf = CSRFProtect()
 app = Flask(__name__)
+requests_cache.install_cache('api_cache', backend='memory', expire_after=480)
+
 
 app.jinja_env.trim_blocks = True
 app.jinja_env.lstrip_blocks = True
