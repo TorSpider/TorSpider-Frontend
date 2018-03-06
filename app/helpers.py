@@ -86,7 +86,7 @@ def api_update(endpoint, data):
 
 
 def api_get(endpoint, query, cache=False):
-    if cache:
+    if not cache:
         s = CachedSession()
         with s.cache_disabled():
             r = s.get(
