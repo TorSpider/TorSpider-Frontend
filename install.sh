@@ -25,7 +25,6 @@ check_same_server() {
     case ${answer:0:1} in
         n|N )
             echo "[-] Ok. We don't need to do anything special."
-            exit 1
         ;;
         * )
             echo "[+] Ok. Reconfiguring..."

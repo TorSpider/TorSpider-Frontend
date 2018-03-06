@@ -216,6 +216,10 @@ a.pure-button-primary {
     position: fixed !important;
 }
 
+.text-center {
+    text-align: center;
+}
+
 .data-content-body {
     /* absolute center .splash within .splash-container */
     width: 90%;

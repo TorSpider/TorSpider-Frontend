@@ -6,6 +6,7 @@ from app import app
 import urllib.parse
 import string
 import random
+from requests_cache import CachedSession
 
 
 def create_api_key():
@@ -52,7 +53,7 @@ def api_create(endpoint, data):
         app.config['API_URL'] + endpoint,
         headers=gen_api_header(),
         data=json.dumps(data),
-        verify=False)
+        verify=app.config['VERIFY_SSL'])
     if r.status_code == 201:
         # If created then it returns the object data
         return json.loads(r.text)
@@ -64,7 +65,7 @@ def api_delete(endpoint, id_):
     r = requests.delete(
         app.config['API_URL'] + endpoint + '/' + id_,
         headers=gen_api_header(),
-        verify=False)
+        verify=app.config['VERIFY_SSL'])
     if r.status_code == 204:
         return True
     else:
@@ -76,7 +77,7 @@ def api_update(endpoint, data):
         app.config['API_URL'] + endpoint,
         headers=gen_api_header(),
         data=json.dumps(data),
-        verify=False)
+        verify=app.config['VERIFY_SSL'])
     if r.status_code == 200:
         # if updated it returns the object data
         return json.loads(r.text)
@@ -84,11 +85,19 @@ def api_update(endpoint, data):
         return {}
 
 
-def api_get(endpoint, query):
-    r = requests.get(
-        app.config['API_URL'] + endpoint + '?q=' + urllib.parse.quote_plus(json.dumps(query)),
-        headers=gen_api_header(),
-        verify=False)
+def api_get(endpoint, query, cache=False):
+    if not cache:
+        s = CachedSession()
+        with s.cache_disabled():
+            r = s.get(
+                app.config['API_URL'] + endpoint + '?q=' + urllib.parse.quote_plus(json.dumps(query)),
+                headers=gen_api_header(),
+                verify=app.config['VERIFY_SSL'])
+    else:
+        r = requests.get(
+            app.config['API_URL'] + endpoint + '?q=' + urllib.parse.quote_plus(json.dumps(query)),
+            headers=gen_api_header(),
+            verify=app.config['VERIFY_SSL'])
     if r.status_code == 200:
         # If created then it returns the object data
         return json.loads(r.text).get('objects')
