@@ -3,6 +3,7 @@ import os
 import logging
 import configparser
 import uuid
+import requests
 
 script_dir = os.path.dirname(os.path.realpath(sys.argv[0]))
 
@@ -44,7 +45,8 @@ def read_config():
             my_config['Backend'] = {
                 'API_URL': config['Backend'].get('API_URL'),
                 'API_KEY': config['Backend'].get('API_KEY'),
-                'API_NODE': config['Backend'].get('API_NODE')
+                'API_NODE': config['Backend'].get('API_NODE'),
+                'VERIFY_SSL': config['Backend'].getboolean('VERIFY_SSL')
             }
             return my_config
         except Exception as e:
@@ -92,7 +94,8 @@ def make_config():
         default_config['Backend'] = {
             'API_URL': 'https://127.0.0.1/api/',
             'API_KEY': 'Specify_API_Key',
-            'API_NODE': 'Specify_API_Node'
+            'API_NODE': 'Specify_API_Node',
+            'VERIFY_SSL': True
         }
         with open(os.path.join(script_dir, 'frontend.cfg'), 'w') as config_file:
             default_config.write(config_file)
@@ -130,3 +133,9 @@ class ProductionConf(object):
     WTF_CSRF_SECRET_KEY = server_config['WTForms'].get('WTF_CSRF_SECRET_KEY')
     SQLALCHEMY_ECHO = server_config['SQLAlchemy'].get('SQLALCHEMY_ECHO')
     SQLALCHEMY_TRACK_MODIFICATIONS = server_config['SQLAlchemy'].get('SQLALCHEMY_TRACK_MODIFICATIONS')
+    VERIFY_SSL = server_config['Backend'].get('VERIFY_SSL')
+    if not VERIFY_SSL:
+        # if we disable ssl verification, we'll also disable warning messages.
+        from requests.packages.urllib3.exceptions import InsecureRequestWarning
+        requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
+
