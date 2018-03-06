@@ -6,6 +6,7 @@ from app import app
 import urllib.parse
 import string
 import random
+from requests_cache import CachedSession
 
 
 def create_api_key():
@@ -84,11 +85,19 @@ def api_update(endpoint, data):
         return {}
 
 
-def api_get(endpoint, query):
-    r = requests.get(
-        app.config['API_URL'] + endpoint + '?q=' + urllib.parse.quote_plus(json.dumps(query)),
-        headers=gen_api_header(),
-        verify=False)
+def api_get(endpoint, query, cache=False):
+    if cache:
+        s = CachedSession()
+        with s.cache_disabled():
+            r = s.get(
+                app.config['API_URL'] + endpoint + '?q=' + urllib.parse.quote_plus(json.dumps(query)),
+                headers=gen_api_header(),
+                verify=False)
+    else:
+        r = requests.get(
+            app.config['API_URL'] + endpoint + '?q=' + urllib.parse.quote_plus(json.dumps(query)),
+            headers=gen_api_header(),
+            verify=False)
     if r.status_code == 200:
         # If created then it returns the object data
         return json.loads(r.text).get('objects')

@@ -8,7 +8,7 @@ from app import app
 @login_required
 def top20():
     query = {"filters": []}
-    top20pages = api_get('top20/pages', query)
-    top20inlinks = api_get('top20/inlinks', query)
-    top20outlinks = api_get('top20/outlinks', query)
+    top20pages = api_get('top20/pages', query, True)
+    top20inlinks = api_get('top20/inlinks', query, True)
+    top20outlinks = api_get('top20/outlinks', query, True)
     return render_template("top20.html", top20pages=top20pages, top20inlinks=top20inlinks, top20outlinks=top20outlinks)

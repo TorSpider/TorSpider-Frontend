@@ -8,6 +8,7 @@ import requests_cache
 
 csrf = CSRFProtect()
 app = Flask(__name__)
+# Using requests_cache we can avoid constantly having to make API calls to the backend for simple web data.
 requests_cache.install_cache('api_cache', backend='memory', expire_after=480)
 
 
