@@ -44,6 +44,22 @@ def create_admin_user(username, password):
         db.session.rollback()
         return False
 
+@manager.command
+def reset_password(username, password):
+    """
+    Create an admin user.
+    """
+    theuser = db.session.query(User).filter(User.username == username).first()
+    theuser.password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+    try:
+        db.session.merge(theuser)
+        db.session.commit()
+        print('User {} Update.'.format(username))
+        return True
+    except Exception as e:
+        print('Failed to update user {}'.format(username))
+        db.session.rollback()
+        return False
 
 @manager.command
 def create_invite_code():
